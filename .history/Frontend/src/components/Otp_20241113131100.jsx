@@ -22,7 +22,7 @@ const Otp = () => {
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/verify-otp", { email, otp });
+      const response = await axios.post("http://localhost:5000/averify-otp", { email, otp });
       if (response.data.success) {
         alert("OTP verified! Redirecting to Welcome page...");
         setStep(3); 

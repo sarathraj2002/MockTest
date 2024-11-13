@@ -9,7 +9,7 @@ const Otp = () => {
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/send-otp", { email });
+      const response = await axios.post("http://localhost:5000/send-otp", { email });
       if (response.status === 200) {
         alert("OTP sent to your email!");
         setStep(2);
@@ -22,7 +22,7 @@ const Otp = () => {
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/verify-otp", { email, otp });
+      const response = await axios.post("http://localhost:5000/verify-otp", { email, otp });
       if (response.data.success) {
         alert("OTP verified! Redirecting to Welcome page...");
         setStep(3); 

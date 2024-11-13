@@ -13,27 +13,27 @@ router.post("/send-otp", async (req, res) => {
    
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-   
+    // Save OTP to database
     await OTP.create({ email, otp });
 
-    
+    // Configure Nodemailer transporter
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER, 
+        user: process.env.EMAIL_USER, // Use environment variables for security
         pass: process.env.EMAIL_PASS,
       },
     });
 
-    
+    // Email options
     const mailOptions = {
-      from: process.env.EMAIL_USER, 
-      to: email, 
+      from: process.env.EMAIL_USER, // Sender address
+      to: email, // Recipient's email
       subject: "Your OTP Code",
       text: `Dear User,\n\nYour OTP code is: ${otp}\n\nThis code is valid for 10 minutes.\n\nBest regards,\nYour App Team`,
     };
 
-    
+    // Send the email
     await transporter.sendMail(mailOptions);
 
     res.status(200).json({ message: "OTP sent successfully" });
@@ -42,17 +42,5 @@ router.post("/send-otp", async (req, res) => {
     res.status(500).json({ message: "Error sending OTP", error: error.message });
   }
 });
-
-// Route to verify OTP
-router.post('/verify-otp', async (req, res) => {
-    const { email, otp } = req.body;
-    const user = await OTP.findOne({ email });
-
-    if (!user || user.otp !== otp || user.otpExpiresAt < new Date()) {
-        return res.status(400).json({ message: 'Invalid or expired OTP' });
-    }
-
-    res.json({ message: 'Login successful' });
-})
 
 module.exports = router;

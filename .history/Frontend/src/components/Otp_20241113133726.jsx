@@ -1,38 +1,66 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const Otp = () => {
-  const [step, setStep] = useState(1); 
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
+// const Otp = () => {
+//   const [step, setStep] = useState(1); 
+//   const [email, setEmail] = useState("");
+//   const [otp, setOtp] = useState("");
 
-  const handleEmailSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:5000/api/send-otp", { email });
-      if (response.status === 200) {
-        alert("OTP sent to your email!");
+//   const handleEmailSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       const response = await axios.post("http://localhost:5000/api/send-otp", { email });
+//       if (response.status === 200) {
+//         alert("OTP sent to your email!");
+//         setStep(2);
+//       }
+//     } catch (error) {
+//       alert("Error sending OTP. Please try again.");
+//     }
+//   };
+
+//   const handleOtpSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       const response = await axios.post("http://localhost:5000/api/verify-otp", { email, otp });
+//       if (response.data.success) {
+//         alert("OTP verified! Redirecting to Welcome page...");
+//         setStep(3); 
+//       } else {
+//         alert("Invalid OTP. Please try again.");
+//       }
+//     } catch (error) {
+//       alert("Error verifying OTP. Please try again.");
+//     }
+//   };
+
+
+
+function Otp() {
+    const [email, setEmail] = useState('');
+    const [otp, setOtp] = useState('');
+    const [step, setStep] = useState(1); // 1: Request OTP, 2: Verify OTP
+    const [message, setMessage] = useState('');
+  
+    const requestOtp = async () => {
+      try {
+        const response = await axios.post('http://localhost:3000/api/send-otp', { email });
+        setMessage(response.data.message);
         setStep(2);
+      } catch (error) {
+        setMessage(error.response?.data?.message || 'Error sending OTP');
       }
-    } catch (error) {
-      alert("Error sending OTP. Please try again.");
-    }
-  };
+    };
+  
+    const verifyOtp = async () => {
+      try {
+        const response = await axios.post('http://localhost:3000/api/verify-otp', { email, otp });
+        setMessage(response.data.message);
+      } catch (error) {
+        setMessage(error.response?.data?.message || 'Error verifying OTP');
+      }
+    };
 
-  const handleOtpSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:5000/api/verify-otp", { email, otp });
-      if (response.data.success) {
-        alert("OTP verified! Redirecting to Welcome page...");
-        setStep(3); 
-      } else {
-        alert("Invalid OTP. Please try again.");
-      }
-    } catch (error) {
-      alert("Error verifying OTP. Please try again.");
-    }
-  };
 
   return (
     <div
@@ -49,7 +77,7 @@ const Otp = () => {
       }}
     >
       {step === 1 && (
-        <form onSubmit={handleEmailSubmit}>
+        <form onSubmit=}>
           <h2 style={{ marginBottom: "20px", color: "#4B6587" }}>Verify Your Email</h2>
           <label style={{ fontSize: "14px", fontWeight: "500" }}>Email Address</label>
           <input
